@@ -8,16 +8,7 @@ const testToken = "https://us1.pusherplatform.io/services/chatkit_token_provider
 const username = "nick"
 const roomId = 19406025
 
-const DUMMY_DATA = [
-  {
-    senderId: "perborgen",
-    text: "who'll win?"
-  },
-  {
-    senderId: "janedoe",
-    text: "who'll win?"
-  }
-]
+
 
 class App extends React.Component {
 
@@ -25,30 +16,30 @@ class App extends React.Component {
   {
     const chatManager = new Chatkit.ChatManager({
       instanceLocator: instanceLocator,
-      userID: username,
+      userId: username,
       tokenProvider: new Chatkit.TokenProvider({
         url: testToken
       })
     })
 
-  chatManager.connect()
-  .then(currentUser => {
-    this.currentUser = currentUser
-    return this.currentUser.getJoinableRooms()
-    .then(joinableRooms => {
-        this.setState({
-            joinableRooms,
-            joinedRooms: this.currentUser.rooms
-        })
+    chatManager.connect().then(currentUser => {
+          currentUser.subscribeToRoom({
+          roomId: roomId,
+          hooks: {
+            onNewMessage: message => {
+            this.setState({
+              messages: [...this.state.messages, message]
+            })
+          }
+        }
+      })
     })
-})
-.catch(err => console.log('error connecting: ', err))
   }
   constructor()
   {
     super();
     this.state = {
-      messages:DUMMY_DATA,
+      messages:[{}],
     };
   }
   render() {
