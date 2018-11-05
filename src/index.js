@@ -1,6 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Chatkit from '@pusher/chatkit'
 import './App.css';
+
+const instanceLocator = "v1:us1:bbd86279-8139-4543-aefa-ea475dade917"
+const testToken = "https://us1.pusherplatform.io/services/chatkit_token_provider/v1/bbd86279-8139-4543-aefa-ea475dade917/token"
+const username = "nick"
+const roomId = 19406025
 
 const DUMMY_DATA = [
   {
@@ -14,6 +20,30 @@ const DUMMY_DATA = [
 ]
 
 class App extends React.Component {
+
+  componentDidMount()
+  {
+    const chatManager = new Chatkit.ChatManager({
+      instanceLocator: instanceLocator,
+      userID: username,
+      tokenProvider: new Chatkit.TokenProvider({
+        url: testToken
+      })
+    })
+
+  chatManager.connect()
+  .then(currentUser => {
+    this.currentUser = currentUser
+    return this.currentUser.getJoinableRooms()
+    .then(joinableRooms => {
+        this.setState({
+            joinableRooms,
+            joinedRooms: this.currentUser.rooms
+        })
+    })
+})
+.catch(err => console.log('error connecting: ', err))
+  }
   constructor()
   {
     super();
@@ -44,16 +74,16 @@ class Title extends React.Component {
 class MessagesList extends React.Component {
   render() {
     return (
-      <ul className = "message=list">
+      <ul className = "message-list">
       {this.props.messages.map(message => {
         return (
           <li key={message.id}>
-          <div>
-          {message.senderID}
-          </div>
-          <div>
-          {message.text}
-          </div>
+            <div>
+              {message.senderId}
+            </div>
+            <div>
+              {message.text}
+            </div>
           </li>
         )
       })}
