@@ -25,8 +25,6 @@ class App extends React.Component {
     //connect to the chat room, and subscribe to the messages
     chatManager.connect().then(currentUser => {
           this.currentUser = currentUser
-
-          console.log(currentUser)
           currentUser.subscribeToRoom({
           roomId: roomId,
           hooks: {
@@ -50,8 +48,6 @@ class App extends React.Component {
   }
 
   sendMessage(text) {
-    console.log(this.currentUser)
-    debugger;
     this.currentUser.sendMessage({
       text,
       roomId: roomId
