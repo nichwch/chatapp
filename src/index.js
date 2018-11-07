@@ -67,7 +67,7 @@ class App extends React.Component {
 class Title extends React.Component {
   render() {
     return (
-      <p class = "Title">Nick's React.js Chat App</p>
+      <p className = "title">Nick's React.js Chat App</p>
     );
   }
 }
@@ -79,7 +79,7 @@ class MessagesList extends React.Component {
       <ul className = "message-list">
       {this.props.messages.map(message => {
         return (
-          <li key={message.Id}>
+          <li key={message.Id} className = "message">
             <div>
               {message.senderId}
             </div>
